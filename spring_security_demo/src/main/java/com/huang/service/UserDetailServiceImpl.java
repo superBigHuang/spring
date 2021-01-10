@@ -23,7 +23,9 @@ public class UserDetailServiceImpl implements UserDetailsService {
         }
         String password = passwordEncoder.encode("123");
         // 比较密码
+        // admin user 是两个权限
+        // ROLE_abc 是abc角色，必须带ROLE_前缀
         return new  User(username,password, AuthorityUtils
-                .commaSeparatedStringToAuthorityList("admin,user"));
+                .commaSeparatedStringToAuthorityList("admin,user,ROLE_abc,/index.html"));
     }
 }
