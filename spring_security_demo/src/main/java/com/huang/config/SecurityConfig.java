@@ -3,14 +3,22 @@ package com.huang.config;
 import com.huang.handler.MyAccessDeniedHandler;
 import com.huang.handler.MyAuthenticationFailureHandler;
 import com.huang.handler.MyAuthenticationSuccessHandler;
+import com.huang.service.UserDetailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+
+import javax.sql.DataSource;
 
 /**
  * spring security 配置类
@@ -20,6 +28,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private MyAccessDeniedHandler myAccessDeniedHandler;
+    @Autowired
+    private DataSource dataSource;
+    @Autowired
+    private PersistentTokenRepository persistentTokenRepository;
+    @Autowired
+    private UserDetailServiceImpl userDetailService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -61,7 +75,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 放行error.html, 不需要认证
                 .antMatchers("/error.html").permitAll()
                 // 放行静态文件
-                .antMatchers("/css/**", "/js/**", "/img/**").permitAll()
+//                .antMatchers("/css/**", "/js/**", "/img/**").permitAll()
                 // 放行所有jpg文件
 //                .antMatchers("/**/*.jpg").permitAll()
 //                .antMatchers("/**/*.mp4").permitAll()
@@ -89,12 +103,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 // 所有的请求都必须认证才能访问，必须登录
                 // 不能放在最上面，spring security从上往下执行
-//                .anyRequest().authenticated();
+                .anyRequest().authenticated();
                 // 自定义access方法
-                .anyRequest().access("@myServiceImpl.hasPermission(request,authentication)");
+//                .anyRequest().access("@myServiceImpl.hasPermission(request,authentication)");
         // 异常处理
         http.exceptionHandling()
                 .accessDeniedHandler(myAccessDeniedHandler);
+
+        // 记住我
+        http.rememberMe()
+                // 设置数据源
+                .tokenRepository(persistentTokenRepository)
+                // rememberMe html的name
+                .rememberMeParameter("remember-me")
+                // 超时时间
+                // 不设置默认为两周
+                .tokenValiditySeconds(60)
+                // 自定义登录逻辑
+                .userDetailsService(userDetailService);
 
         // 关闭csrf
         http.csrf().disable();
@@ -103,5 +129,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public PasswordEncoder getPw() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public PersistentTokenRepository persistentTokenRepository() {
+        JdbcTokenRepositoryImpl jdbcTokenRepository = new JdbcTokenRepositoryImpl();
+        // 设置数据源
+        jdbcTokenRepository.setDataSource(dataSource);
+        // 自动建表
+//        jdbcTokenRepository.setCreateTableOnStartup(true);
+        return jdbcTokenRepository;
     }
 }
