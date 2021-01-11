@@ -40,7 +40,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // 表单提交
         http.formLogin()
                 // 自定义登录页面
-                .loginPage("/login.html")
+//                .loginPage("/login.html")
+                .loginPage("/showLogin")
                 // 必须和表但提交的接口一样，会去执行自定义登录逻辑
                 .loginProcessingUrl("/login")
                 // 登录成功后跳转的请求，必须为post
@@ -71,7 +72,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 放行login.html，不需要认证
 //                .antMatchers("/login.html").permitAll()
                 // 使用access
-                .antMatchers("/login.html").access("permitAll")
+//                .antMatchers("/login.html").access("permitAll")
+                .antMatchers("/showLogin").access("permitAll")
                 // 放行error.html, 不需要认证
                 .antMatchers("/error.html").permitAll()
                 // 放行静态文件
@@ -122,8 +124,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 自定义登录逻辑
                 .userDetailsService(userDetailService);
 
+        // 登出
+        http.logout()
+                // 退出url
+                .logoutUrl("/user/logout")
+                // 退出成功后跳转的页面
+                .logoutSuccessUrl("/login.html");
+
         // 关闭csrf
-        http.csrf().disable();
+//        http.csrf().disable();
     }
 
     @Bean
