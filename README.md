@@ -14,4 +14,10 @@
 本来在csdn上看别人的spring security + jwt + mybatis 的项目想试着打一下，结果发现看不太懂，这次重新学一下
 
 ## springsecurityoauth2
-oauth2协议的使用包括授权码模式和密码模式
+- oauth2协议的使用包括授权码模式和密码模式
+- access token转成jwt
+- 单点登录授权服务器
+- spring security oauth2 + jwt 整合
+
+## oauth2-client01-demo
+单点登录客户端
