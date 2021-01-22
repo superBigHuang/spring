@@ -3,7 +3,7 @@ server:
 spring:
   application:
     # 这个name就是注册进Eureka的名字
-    name: cloud-payment-com.springcloud.service
+    name: cloud-payment-service
   datasource:
     driver-class-name: org.gjt.mm.mysql.Driver
     type: com.alibaba.druid.pool.DruidDataSource
@@ -27,4 +27,9 @@ eureka:
       #集群版
       defaultZone: http://eureka7001.com:7001/eureka/,http://eureka7002.com:7002/eureka/
 
+  instance:
+    # 更改eureka下的主机名称
+    instance-id: payment8001
+    # 访问路径可以显示ip地址
+    prefer-ip-address: true
 
