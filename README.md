@@ -1,7 +1,8 @@
 
-
+# main分支
+> 目前尚未启用，打算到时候放一些头文件配置类之类的
 # huangn分支
-
+> spring相关可复用的变成技巧
 ## data_verify 
 
 [参考了大佬写的代码](https://github.com/Snailclimb/springboot-guide/blob/master/docs/advanced/spring-bean-validation.md)	
@@ -21,3 +22,6 @@
 
 ## oauth2-client01-demo
 单点登录客户端
+
+# springcloud分支
+> springcloud 相关
