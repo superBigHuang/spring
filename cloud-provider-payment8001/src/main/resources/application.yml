@@ -26,10 +26,13 @@ eureka:
       # defaultZone: http://localhost:7001/eureka
       #集群版
       defaultZone: http://eureka7001.com:7001/eureka/,http://eureka7002.com:7002/eureka/
-
   instance:
     # 更改eureka下的主机名称
     instance-id: payment8001
     # 访问路径可以显示ip地址
     prefer-ip-address: true
+    # Eureka客户端向服务端发送心跳的时间间隔，单位为毫秒
+    lease-renewal-interval-in-seconds: 1
+    # Eureka服务端最后一次心跳后等待时间,超时讲剔除服务
+    lease-expiration-duration-in-seconds: 2
 
